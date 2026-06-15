@@ -2,7 +2,7 @@
 
 export default function Navbar() {
   return (
-    <div className="navbar sticky top-0 z-50 flex justify-between  px-[28px] h-[68px] bg-[#100c0c] text-[#807f8a] items-center">
+    <div className="navbar sticky top-0 z-50 flex justify-between  px-[28px] h-[68px] bg-[linear-gradient(to_right,black,transparent,black)] text-[#807f8a] items-center">
       <div className="logo">
         <div className="brand font-extrabold  text-xl text-white  "><span className="seal w-7 h-7 rounded-full border-amber-600 border-5 p-1 mr-1  text-sm"><b className=" p-1 text-amber-600 font-medium ">F</b></span> FOUNDRY</div>
 

@@ -7,3 +7,18 @@ body {
  padding: 0;
  box-sizing: border-box;
 }
+.coin{
+    animation:spin 9s linear infinite;
+   
+     transform-style: preserve-3d;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotateZ(-6deg) rotateY(0deg);
+  }
+
+  100% {
+    transform: rotateZ(15deg) rotateY(360deg);
+  }
+}
