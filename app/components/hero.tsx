@@ -9,7 +9,7 @@ export const Hero = () => {
 
             </div>
             <div className="cta ">
-                  <button className="btn btn-molten bg-amber-500 text-black px-5 py-2.5 rounded-xl font-bold mr-4">Start forging →</button>
+                  <button className="btn btn-molten bg-[#f36f25] text-black px-5 py-2.5 rounded-xl font-bold mr-4">Start forging →</button>
     <button className="btn btn-ghost bg-black text-white border-zinc-600 border-2 px-5 py-2.5 rounded-xl font-bold">View on Explorer</button>
             </div>
             <div className="coin-base w-60 h-60 perspective-[1000px]"> <Coinsvg className="coin w-full h-full" /></div>
@@ -18,7 +18,7 @@ export const Hero = () => {
     )
 }
 
-export const Coinsvg=({className})=>{
+export const Coinsvg=({className}:{className:string})=>{
     return (
         <svg
   xmlns="http://www.w3.org/2000/svg"
