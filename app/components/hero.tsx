@@ -1,9 +1,9 @@
 export const Hero = () => {
     return (
         <div className="hero 
- h-screen flex flex-col items-center gap-6  pt-8">
+ min-h-screen flex flex-col items-center gap-6  pt-8 mb-8">
             <div className="badge text-amber-500 pt-6 pb-3">The Solana Token Mint</div>
-            <div className="heading1 text-8xl font-extrabold"><h1 className="text-white">Forge your token.<br/><span className="molten text-amber-500">Strike it on-chain.</span></h1></div>
+            <div className="heading1 text-4xl md:text-6xl lg:text-8xl font-extrabold"><h1 className="text-white">Forge your token.<br/><span className="molten text-amber-500">Strike it on-chain.</span></h1></div>
             <div className="para text-[#807f8a] flex flex-col items-center text-center mt-6 text-lg w-2/3">
                 <p>A precision foundry for SPL tokens. Create, mint, burn and transfer —<br/> no code, no commitee, settled in under a second.</p>
 

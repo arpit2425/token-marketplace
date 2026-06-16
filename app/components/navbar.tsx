@@ -7,7 +7,7 @@ export default function Navbar() {
         <div className="brand font-extrabold  text-xl text-white  "><span className="seal w-7 h-7 rounded-full border-amber-600 border-5 p-1 mr-1  text-sm"><b className=" p-1 text-amber-600 font-medium ">F</b></span> FOUNDRY</div>
 
       </div>
-      <div className="nav-links flex gap-6">
+      <div className="nav-links hidden lg:flex gap-6">
         <a href="#tools">Tools</a>
         <a href="#features">How it works</a>
         <a href="#">Docs</a>
