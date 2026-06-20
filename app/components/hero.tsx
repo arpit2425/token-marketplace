@@ -27,22 +27,22 @@ export const Coinsvg=({className}:{className:string})=>{
 >
   <defs>
     <radialGradient id="coinFace" cx="35%" cy="25%">
-      <stop offset="0%" stop-color="#fff5c8" />
-      <stop offset="40%" stop-color="#f2d47b" />
-      <stop offset="75%" stop-color="#d9a82c" />
-      <stop offset="100%" stop-color="#8c5c10" />
+      <stop offset="0%" stopColor="#fff5c8" />
+      <stop offset="40%" stopColor="#f2d47b" />
+      <stop offset="75%" stopColor="#d9a82c" />
+      <stop offset="100%" stopColor="#8c5c10" />
     </radialGradient>
 
     <linearGradient id="rim" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7d875" />
-      <stop offset="50%" stop-color="#9b6a13" />
-      <stop offset="100%" stop-color="#f7d875" />
+      <stop offset="0%" stopColor="#f7d875" />
+      <stop offset="50%" stopColor="#9b6a13" />
+      <stop offset="100%" stopColor="#f7d875" />
     </linearGradient>
 
     <radialGradient id="center">
-      <stop offset="0%" stop-color="#fff8dc" />
-      <stop offset="60%" stop-color="#d6ae57" />
-      <stop offset="100%" stop-color="#8d6016" />
+      <stop offset="0%" stopColor="#fff8dc" />
+      <stop offset="60%" stopColor="#d6ae57" />
+      <stop offset="100%" stopColor="#8d6016" />
     </radialGradient>
   </defs>
 
@@ -79,7 +79,7 @@ export const Coinsvg=({className}:{className:string})=>{
     r="38"
     fill="none"
     stroke="#6d460e"
-    stroke-width="6"
+    strokeWidth="6"
   />
 
  

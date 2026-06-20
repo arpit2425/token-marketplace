@@ -22,3 +22,18 @@ body {
     transform: rotateZ(15deg) rotateY(360deg);
   }
 }
+@layer components {
+    .form-label{
+        @apply text-[#9a9aa8] text-[12px] mb-1 block;
+     
+    }
+    .hint-label{
+        @apply text-[#9a9aa8]  mt-1 rounded-2xl bg-black w-full p-3  placeholder:text-[#9a9aa8] placeholder:text-[16px];
+    }
+    .row2{
+        @apply flex gap-2 w-full justify-between;
+    }
+    .field{
+        @apply flex flex-col w-full;
+    }
+}
