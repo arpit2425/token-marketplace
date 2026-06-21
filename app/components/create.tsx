@@ -1,25 +1,53 @@
 export const Create = () => {
-    return (
-        <div className="flex p-10 text-white min-h-full w-full gap-10">
-            <div className="form h-full w-[60%] rounded-2xl gap-6 flex flex-col">
+  return (
+    <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white min-h-full w-full gap-10">
+      <div className="form h-full lg:w-[60%] rounded-2xl gap-6 flex flex-col">
 
         <div><span className="accent-chip px-4  py-2 bg-[#291a19] text-[#fe6a1a]  rounded-2xl text-[12px] " >⬡ FORGE A NEW MINT</span>
-</div>
+        </div>
         <h3 className="text-2xl font-bold">Create token</h3>
         <p className="lead text-[#9a9aa8] text-[12px]">Define the asset. We initialise the mint account, set authorities and (optionally) upload Metaplex metadata.</p>
         <div className="row2 ">
-          <div className="field"><label className="form-label">Token name</label><input className="input hint-label" placeholder="Solar Credit" onChange={(e) => {}}/></div>
-          <div className="field"><label className="form-label">Symbol <span className="hint">≤ 10</span></label><input className="input mono hint-label" placeholder="SOLAR" onChange={(e) => {}}/></div>
+          <div className="field"><label className="form-label">Token name</label><input className="input hint-label" placeholder="Solar Credit" onChange={(e) => { }} /></div>
+          <div className="field"><label className="form-label">Symbol <span className="hint">≤ 10</span></label><input className="input mono hint-label" placeholder="SOLAR" onChange={(e) => { }} /></div>
         </div>
         <div className="row2 ">
-          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label" value="9" onChange={(e) => {}}/></div>
-          <div className="field"><label className="form-label">Initial supply</label><input className="input mono hint-label" placeholder="1,000,000" onChange={(e) => {}}/></div>
+          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label" value="9" onChange={(e) => { }} /></div>
+          <div className="field"><label className="form-label">Initial supply</label><input className="input mono hint-label" placeholder="1,000,000" onChange={(e) => { }} /></div>
         </div>
-        <div className="field"><label className="block form-label">Description</label><input className="input block hint-label" placeholder="What does this token represent?" onChange={(e) => {}} /></div>
+        <div className="field"><label className="block form-label">Description</label><input className="input block hint-label" placeholder="What does this token represent?" onChange={(e) => { }} /></div>
         <div className="field-action"><button className="btn w-full py-3 items-center mb-4 rounded-2xl bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] text-black font-medium">⬡ Forge token →</button></div>
-     
-            </div>
-            <div className="logo h-full w-[40%] bg-[#09090a] rounded-2xl">logo</div>
+
+      </div>
+      <div className="p-4 h-full lg:w-[40%] bg-[#09090a] rounded-2xl">
+          <aside className="aside flex flex-col text-[#9a9aa8] gap-3" >
+        <h4 className="uppercase">Token logo</h4>
+        <div className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300"><div className="border-1 border-dotted border-[#9a9aa8]  rounded-full w-10 h-10 m-auto flex justify-center items-center">↑</div><p>Drop logo or click</p><small>PNG / SVG · 512×512</small></div>
+<div
+  className="
+    token-card
+    border
+    border-[#9a9aa8]
+    p-5
+    rounded-2xl
+   
+
+    mb-6
+     bg-[radial-gradient(circle_at_10%_50%,rgba(37,99,235,0.15),transparent_35%),
+         radial-gradient(circle_at_90%_10%,rgba(249,115,22,0.20),transparent_25%),
+         linear-gradient(to_right,#12121a,#0b0b10,#12121a)]
+  "
+  style={{ marginTop: '18px' }}
+>          <div className="tc-top grid grid-cols-[auto_1fr] mb-6"><div className="tc-logo bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] p-4 rounded-full w-10 h-10 flex justify-center items-center text-black font-bold mr-2">S</div><div ><b className="row-span-1 text-white font-extrabold">Solar Credit</b><span className="block row-span-2 text-[#9a9aa8] text-[10px]">SOLAR</span></div></div>
+          <div className="tc-rows bg-black rounded-2xl">
+            <div className="tc-row"><span className="block">Decimals</span><b className="text-white block">9</b></div>
+            <div className ="tc-row"><span>Supply</span><b className="text-white block">1,000,000</b></div>
+            <div className="tc-row"><span>Mint authority</span><b className="text-white block">You</b></div>
+            <div className="tc-row"><span>Est. rent</span><b className="text-white block">0.0014 ◎</b></div>
+          </div>
         </div>
-    )
+      </aside>
+      </div>
+    </div>
+  )
 }

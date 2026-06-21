@@ -31,9 +31,12 @@ body {
         @apply text-[#9a9aa8]  mt-1 rounded-2xl bg-black w-full p-3  placeholder:text-[#9a9aa8] placeholder:text-[16px];
     }
     .row2{
-        @apply flex gap-2 w-full justify-between;
+        @apply flex gap-2 w-full flex-col sm:flex-row sm:justify-between;
     }
     .field{
         @apply flex flex-col w-full;
+    }
+    .tc-row{
+        @apply flex flex-col sm:flex-row gap-2 w-full justify-between border-b border-[#1a1a1a] p-3;
     }
 }

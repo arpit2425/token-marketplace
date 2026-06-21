@@ -11,7 +11,7 @@ export const BrowserWindow =()=>{
     const [active, setActive] = useState("create");
     return (
      
-            <div className="browser-window border-1 rounded-3xl border-slate-600 w-full min-h-screen md:min-h-[640px] mt-4 grid grid-rows-[10%_30%_60%]  md:grid-rows-[68px_60px_1fr] grid-cols-1"> 
+            <div className="browser-window border-1 rounded-3xl border-slate-600 w-full min-h-screen md:min-h-[640px] mt-4 grid grid-rows-[1fr_4fr_24fr] sm:grid-rows-[1fr_3fr_12fr]  md:grid-rows-[68px_60px_1fr] grid-cols-1"> 
            <div className="b-header w-full rounded-t-3xl bg-[#131317] p-3 flex justify-start items-center">
             <div className="icons flex gap-2 mr-4 ">
                 <div className="orange h-3 w-3 rounded-full bg-orange-500"></div>
@@ -21,7 +21,7 @@ export const BrowserWindow =()=>{
             <div className="title inline text-slate-400">spl-token-program</div>
 
            </div>
-           <div className="b-nav z-50 w-full bg-[#0e0e10] grid grid-cols-1 grid-rows-4   md:grid-rows-1 md:grid-cols-[25%_25%_25%_25%] text-slate-400 ">
+           <div className="b-nav  w-full bg-[#0e0e10] grid grid-cols-1 grid-rows-4   md:grid-rows-1 md:grid-cols-[25%_25%_25%_25%] text-slate-400 ">
             <button onClick={() => setActive("create")} className="create hover:bg-[#131317] hover:text-white cursor-pointer transition-colors duration-200 ease-in-out flex items-center justify-center gap-4 " >
                 <div className="icon "><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
