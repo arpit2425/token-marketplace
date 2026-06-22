@@ -15,7 +15,7 @@ export default function Navbar() {
       </div>
       <button
 
-        className="btn btn-molten text-black px-5 py-3 bg-gradient-to-b from-[#FF8A3D] to-[#E5500A]  rounded-lg  w-43 h-11 text-s font-medium"
+        className="btn btn-molten text-black sm:px-5 py-3 bg-gradient-to-b from-[#FF8A3D] to-[#E5500A]  rounded-lg  w-28 sm:w-43 h-11 text-[12px] sm:text-s font-medium"
       >
         ◈ Connect Wallet
       </button>    </div>
