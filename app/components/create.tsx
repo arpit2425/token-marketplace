@@ -1,4 +1,21 @@
+"use client";
+
+import { useState } from "react";
+
+
 export const Create = () => {
+  const [logo, setLogo] = useState<string | null>(null);
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      setLogo(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white min-h-full w-full gap-10">
       <div className="form h-full lg:w-[60%] rounded-2xl gap-6 flex flex-col">
@@ -22,8 +39,38 @@ export const Create = () => {
       <div className="p-4 h-full lg:w-[40%] bg-[#09090a] rounded-2xl">
         <aside className="aside flex flex-col text-[#9a9aa8] gap-3" >
           <h4 className="uppercase">Token logo</h4>
-          <div className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300"><div className="border-1 border-dotted border-[#9a9aa8]  rounded-full w-10 h-10 m-auto flex justify-center items-center">↑</div><p>Drop logo or click</p><small>PNG / SVG · 512×512</small></div>
-                 <div 
+          <label className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300">
+            {logo ? (
+              <img
+                src={logo}
+                alt="logo"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            ) : (
+              <>
+                <div className="border border-dotted border-[#9a9aa8] rounded-full w-10 h-10 flex justify-center items-center">
+                  ↑
+                </div>
+
+                <p>Drop logo or click</p>
+                <small>PNG / SVG · 512×512</small>
+              </>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                console.log(file);
+              }}
+            />
+          </label>
+          <div
             className="
               border
               border-[#2a2a35]
@@ -33,7 +80,7 @@ export const Create = () => {
               bg-[radial-gradient(circle_at_10%_50%,rgba(37,99,235,0.15),transparent_35%),radial-gradient(circle_at_90%_10%,rgba(249,115,22,0.20),transparent_25%),linear-gradient(to_right,#12121a,#0b0b10,#12121a)]
             "
           >
-                <div className="tc-top grid grid-cols-[auto_1fr] mb-6"><div className="tc-logo bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] p-4 rounded-full w-10 h-10 flex justify-center items-center text-black font-bold mr-2">S</div><div ><b className="row-span-1 text-white font-extrabold">Solar Credit</b><span className="block row-span-2 text-[#9a9aa8] text-[10px]">SOLAR</span></div></div>
+            <div className="tc-top grid grid-cols-[auto_1fr] mb-6"><div className="tc-logo bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] p-4 rounded-full w-10 h-10 flex justify-center items-center text-black font-bold mr-2">S</div><div ><b className="row-span-1 text-white font-extrabold">Solar Credit</b><span className="block row-span-2 text-[#9a9aa8] text-[10px]">SOLAR</span></div></div>
             <div className="tc-rows bg-black rounded-2xl">
               <div className="tc-row"><span className="block">Decimals</span><b className="text-white block">9</b></div>
               <div className="tc-row"><span>Supply</span><b className="text-white block">1,000,000</b></div>
