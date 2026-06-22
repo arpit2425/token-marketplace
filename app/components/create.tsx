@@ -20,33 +20,28 @@ export const Create = () => {
 
       </div>
       <div className="p-4 h-full lg:w-[40%] bg-[#09090a] rounded-2xl">
-          <aside className="aside flex flex-col text-[#9a9aa8] gap-3" >
-        <h4 className="uppercase">Token logo</h4>
-        <div className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300"><div className="border-1 border-dotted border-[#9a9aa8]  rounded-full w-10 h-10 m-auto flex justify-center items-center">↑</div><p>Drop logo or click</p><small>PNG / SVG · 512×512</small></div>
-<div
-  className="
-    token-card
-    border
-    border-[#9a9aa8]
-    p-5
-    rounded-2xl
-   
-
-    mb-6
-     bg-[radial-gradient(circle_at_10%_50%,rgba(37,99,235,0.15),transparent_35%),
-         radial-gradient(circle_at_90%_10%,rgba(249,115,22,0.20),transparent_25%),
-         linear-gradient(to_right,#12121a,#0b0b10,#12121a)]
-  "
-  style={{ marginTop: '18px' }}
->          <div className="tc-top grid grid-cols-[auto_1fr] mb-6"><div className="tc-logo bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] p-4 rounded-full w-10 h-10 flex justify-center items-center text-black font-bold mr-2">S</div><div ><b className="row-span-1 text-white font-extrabold">Solar Credit</b><span className="block row-span-2 text-[#9a9aa8] text-[10px]">SOLAR</span></div></div>
-          <div className="tc-rows bg-black rounded-2xl">
-            <div className="tc-row"><span className="block">Decimals</span><b className="text-white block">9</b></div>
-            <div className ="tc-row"><span>Supply</span><b className="text-white block">1,000,000</b></div>
-            <div className="tc-row"><span>Mint authority</span><b className="text-white block">You</b></div>
-            <div className="tc-row"><span>Est. rent</span><b className="text-white block">0.0014 ◎</b></div>
+        <aside className="aside flex flex-col text-[#9a9aa8] gap-3" >
+          <h4 className="uppercase">Token logo</h4>
+          <div className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300"><div className="border-1 border-dotted border-[#9a9aa8]  rounded-full w-10 h-10 m-auto flex justify-center items-center">↑</div><p>Drop logo or click</p><small>PNG / SVG · 512×512</small></div>
+                 <div 
+            className="
+              border
+              border-[#2a2a35]
+              rounded-3xl
+              p-5
+              overflow-hidden
+              bg-[radial-gradient(circle_at_10%_50%,rgba(37,99,235,0.15),transparent_35%),radial-gradient(circle_at_90%_10%,rgba(249,115,22,0.20),transparent_25%),linear-gradient(to_right,#12121a,#0b0b10,#12121a)]
+            "
+          >
+                <div className="tc-top grid grid-cols-[auto_1fr] mb-6"><div className="tc-logo bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] p-4 rounded-full w-10 h-10 flex justify-center items-center text-black font-bold mr-2">S</div><div ><b className="row-span-1 text-white font-extrabold">Solar Credit</b><span className="block row-span-2 text-[#9a9aa8] text-[10px]">SOLAR</span></div></div>
+            <div className="tc-rows bg-black rounded-2xl">
+              <div className="tc-row"><span className="block">Decimals</span><b className="text-white block">9</b></div>
+              <div className="tc-row"><span>Supply</span><b className="text-white block">1,000,000</b></div>
+              <div className="tc-row"><span>Mint authority</span><b className="text-white block">You</b></div>
+              <div className="tc-row"><span>Est. rent</span><b className="text-white block">0.0014 ◎</b></div>
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
       </div>
     </div>
   )

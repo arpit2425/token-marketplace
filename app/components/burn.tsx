@@ -59,7 +59,7 @@ export const Burn = () => {
       {/* Preview Card */}
       <div className="lg:w-[40%] rounded-2xl bg-[#09090a] p-4">
         <aside className="flex flex-col gap-4 text-[#9a9aa8]">
-          <div
+          <div 
             className="
               border
               border-[#2a2a35]
