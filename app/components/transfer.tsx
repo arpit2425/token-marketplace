@@ -1,4 +1,8 @@
+"use client";
+
+import { useWallet } from "@solana/wallet-adapter-react";
 export const Transfer = () => {
+    const { connected, publicKey } = useWallet();
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
       {/* Form Section */}
@@ -116,7 +120,7 @@ export const Transfer = () => {
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>From</span>
                 <span className="text-white font-mono text-sm">
-                   1,000,000
+                  {connected? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}` : " 1,000,000"}
                 </span>
               </div>
 
