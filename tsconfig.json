@@ -30,5 +30,12 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+ 
+  "exclude": [
+    "tokens",
+    "target",
+    ".anchor",
+    "node_modules"
+  ]
+
 }
