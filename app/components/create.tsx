@@ -4,18 +4,49 @@ import { useState } from "react";
 
 
 export const Create = () => {
-  const [logo, setLogo] = useState<string | null>(null);
+ const [logo, setLogo] = useState<string>("");
+const [logoUrl, setLogoUrl] = useState<string>("");
+const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0];
+const handleFileChange = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
 
-    if (file) {
-      setLogo(URL.createObjectURL(file));
+  if (!file) return;
+
+  // Local preview
+  setLogo(URL.createObjectURL(file));
+
+  try {
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Upload failed");
     }
-  };
 
+    const data = await response.json();
+
+    console.log("CID:", data.cid);
+    console.log("IPFS URL:", data.url);
+
+    // Save URL for metadata.json creation later
+    setLogoUrl(data.url);
+  } catch (error) {
+    console.error("Upload error:", error);
+    alert("Failed to upload image");
+  } finally {
+    setIsUploading(false);
+  }
+};
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white min-h-full w-full gap-10">
       <div className="form h-full lg:w-[60%] rounded-2xl gap-6 flex flex-col">
@@ -42,7 +73,7 @@ export const Create = () => {
           <label className="upload border-dotted border-[#9a9aa8] hover:border-[#fe6a1a] rounded-2xl border-2 flex flex-col justify-center items-center p-8 gap-4 duration-300">
             {logo ? (
               <img
-                src={logo}
+                src={logoUrl || logo}
                 alt="logo"
                 className="w-24 h-24 rounded-full object-cover"
               />
