@@ -1,13 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 
 export const Create = () => {
  const [logo, setLogo] = useState<string>("");
 const [logoUrl, setLogoUrl] = useState<string>("");
 const [isUploading, setIsUploading] = useState(false);
-
+const [formData, setFormData] = useState({
+  name: "",
+  symbol: "",
+  decimals: 9,
+  supply: "",
+  description: "",
+});
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+}
 const handleFileChange = async (
   e: React.ChangeEvent<HTMLInputElement>
 ) => {
@@ -40,12 +53,42 @@ const handleFileChange = async (
 
     // Save URL for metadata.json creation later
     setLogoUrl(data.url);
+    setFormData((prevData) => ({
+      ...prevData,
+      logoUrl: data.url,
+    }));
   } catch (error) {
     console.error("Upload error:", error);
     alert("Failed to upload image");
   } finally {
     setIsUploading(false);
   }
+};
+const handleOnSubmit = async () => {
+  console.log("Form Data:", formData);
+  const metadata = {
+    name: formData.name,
+    symbol: formData.symbol,
+    description: formData.description,
+    image: logoUrl, // Use the uploaded logo URL
+  };
+
+   const response = await fetch("/api/upload-metadata", {
+      method: "POST",
+      body: JSON.stringify(metadata),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Metadata upload response:", response);
+    if (!response.ok) {
+      console.error("Failed to upload metadata");
+      return;
+    }
+
+    const data = await response.json();
+    console.log("Metadata IPFS URL:", data.uri);
+  // Here you would typically send the formData to your backend or Solana program
 };
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white min-h-full w-full gap-10">
@@ -56,15 +99,15 @@ const handleFileChange = async (
         <h3 className="text-2xl font-bold">Create token</h3>
         <p className="lead text-[#9a9aa8] text-[12px]">Define the asset. We initialise the mint account, set authorities and (optionally) upload Metaplex metadata.</p>
         <div className="row2 ">
-          <div className="field"><label className="form-label">Token name</label><input className="input hint-label" placeholder="Solar Credit" onChange={(e) => { }} /></div>
-          <div className="field"><label className="form-label">Symbol <span className="hint">≤ 10</span></label><input className="input mono hint-label" placeholder="SOLAR" onChange={(e) => { }} /></div>
+          <div className="field"><label className="form-label">Token name</label><input className="input hint-label" placeholder="Solar Credit" name="name" onChange={handleInputChange} /></div>
+          <div className="field"><label className="form-label">Symbol <span className="hint">≤ 10</span></label><input className="input mono hint-label" placeholder="SOLAR" name="symbol" onChange={handleInputChange} /></div>
         </div>
         <div className="row2 ">
-          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label" value="9" onChange={(e) => { }} /></div>
-          <div className="field"><label className="form-label">Initial supply</label><input className="input mono hint-label" placeholder="1,000,000" onChange={(e) => { }} /></div>
+          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label" value="9" name="decimals" onChange={handleInputChange} /></div>
+          <div className="field"><label className="form-label">Initial supply</label><input className="input mono hint-label" placeholder="1,000,000" name="supply" onChange={handleInputChange} /></div>
         </div>
-        <div className="field"><label className="block form-label">Description</label><input className="input block hint-label" placeholder="What does this token represent?" onChange={(e) => { }} /></div>
-        <div className="field-action"><button className="btn w-full py-3 items-center mb-4 rounded-2xl bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] text-black font-medium">⬡ Forge token →</button></div>
+        <div className="field"><label className="block form-label">Description</label><input className="input block hint-label" placeholder="What does this token represent?" name="description" onChange={handleInputChange} /></div>
+        <div className="field-action"><button className="btn w-full py-3 items-center mb-4 rounded-2xl bg-gradient-to-b from-[#FF8A3D] to-[#E5500A] text-black font-medium" onClick={handleOnSubmit}>⬡ Forge token →</button></div>
 
       </div>
       <div className="p-4 h-full lg:w-[40%] bg-[#09090a] rounded-2xl">
