@@ -1,8 +1,32 @@
 "use client";
 
+import { getProvider, transferToken } from "@/services/service";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { ReactHTMLElement, useState } from "react";
 export const Transfer = () => {
-    const { connected, publicKey } = useWallet();
+  const { connected, publicKey, signTransaction } = useWallet();
+  const [formData, setFormData] = useState({
+    tokenAccount: "6Wj8vT2XrxSH15xPuikZQXESjdXksE9onzKxofCPp9dH",
+    receiverAccount: "",
+    amount: ""
+  })
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+  const handleOnSubmit=async()=>{
+    const program=await getProvider(publicKey,signTransaction);
+    if(!program || !signTransaction || !publicKey){
+      return
+    }
+    const {tokenAccount,receiverAccount,amount}=formData;
+    const response=await transferToken({program,publicKey,tokenAccount:new PublicKey(tokenAccount),receiverAccount:new PublicKey(receiverAccount),amount:+amount});
+    console.log(response);
+  }
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
       {/* Form Section */}
@@ -36,6 +60,8 @@ export const Transfer = () => {
           <input
             className="input mono"
             placeholder="7xpejndj.....dkjnj"
+            onChange={handleOnChange}
+            name="receiverAccount"
           />
         </div>
 
@@ -47,6 +73,8 @@ export const Transfer = () => {
           <input
             className="input mono"
             placeholder="250,000"
+            onChange={handleOnChange}
+            name="amount"
           />
         </div>
 
@@ -64,6 +92,7 @@ export const Transfer = () => {
               hover:opacity-90
               transition
             "
+            onClick={handleOnSubmit}
           >
             → Send Transfer →
           </button>
@@ -120,7 +149,7 @@ export const Transfer = () => {
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>From</span>
                 <span className="text-white font-mono text-sm">
-                  {connected? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}` : " 1,000,000"}
+                  {connected ? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}` : " 1,000,000"}
                 </span>
               </div>
 
@@ -137,14 +166,14 @@ export const Transfer = () => {
                   1,000,000
                 </span>
               </div>
-                    <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
+              <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>Recipient ATA</span>
                 <span className="text-white font-mono text-sm">
                   1,000,000
                 </span>
               </div>
 
-              
+
             </div>
           </div>
         </aside>

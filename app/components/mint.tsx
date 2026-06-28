@@ -1,4 +1,44 @@
+import { mintToken, getProvider } from "@/services/service";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { useState } from "react";
+
 export const Mint = () => {
+  const {publicKey,signTransaction}=useWallet();
+  const[receiver,setReceiver]=useState("");
+  const [amount,setAmount] =useState("");
+
+   const [formData, setFormData] = useState({
+  receiver: "",
+  amount: "",
+  token: "",
+});
+
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+}
+
+  const onMintToken=async()=>{
+    console.log("formData",formData)
+      const program=await getProvider(publicKey,signTransaction);
+      const {amount,receiver,token}=formData;
+      if(!program || !publicKey || !signTransaction){
+        return
+      }
+        const respo= await mintToken({
+          program,
+          publicKey,
+          tokenAccount:new PublicKey("BUA1WY4hEwpgBa3xCzBfPfT3cc2KfqGZWxkeaYhpTUM2"),
+          receiverAccount:new PublicKey(receiver),
+          amount:+amount,
+         });
+         console.log("respo",respo);
+
+  }
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
       {/* Form Section */}
@@ -33,6 +73,8 @@ export const Mint = () => {
           <input
             className="input mono"
             placeholder="Recipient wallet / token account"
+            name="receiver"
+            onChange={handleInputChange}
           />
         </div>
 
@@ -44,6 +86,8 @@ export const Mint = () => {
           <input
             className="input mono"
             placeholder="250,000"
+            name="amount"
+             onChange={handleInputChange}
           />
         </div>
 
@@ -61,6 +105,7 @@ export const Mint = () => {
               hover:opacity-90
               transition
             "
+            onClick={onMintToken}
           >
             ⬡ Mint To Wallet →
           </button>

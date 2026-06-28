@@ -1,13 +1,16 @@
 "use client";
 
-import { use, useState } from "react";
+import { createAndMintToken, getProvider } from "@/services/service";
+import { useWallet } from "@solana/wallet-adapter-react";
+import {  useState } from "react";
 
 
 export const Create = () => {
  const [logo, setLogo] = useState<string>("");
 const [logoUrl, setLogoUrl] = useState<string>("");
 const [isUploading, setIsUploading] = useState(false);
-const [formData, setFormData] = useState({
+ const { publicKey, signTransaction } = useWallet();
+ const [formData, setFormData] = useState({
   name: "",
   symbol: "",
   decimals: 9,
@@ -72,6 +75,13 @@ const handleOnSubmit = async () => {
     description: formData.description,
     image: logoUrl, // Use the uploaded logo URL
   };
+  const program=await getProvider(publicKey,signTransaction);
+  const {name,symbol,decimals,description, supply}=formData;
+  if(!program || !signTransaction || !publicKey){
+    return;
+  }
+  console.log("program ",program)
+
 
    const response = await fetch("/api/upload-metadata", {
       method: "POST",
@@ -88,6 +98,20 @@ const handleOnSubmit = async () => {
 
     const data = await response.json();
     console.log("Metadata IPFS URL:", data.uri);
+   const chainResponse= await createAndMintToken({
+    program,
+    publicKey,
+    decimals,
+    name,
+    symbol,
+    uri:data.uri,
+    amount: +supply,
+
+   });
+   console.log("chainResponse",chainResponse)
+
+
+
   // Here you would typically send the formData to your backend or Solana program
 };
   return (
@@ -103,7 +127,7 @@ const handleOnSubmit = async () => {
           <div className="field"><label className="form-label">Symbol <span className="hint">≤ 10</span></label><input className="input mono hint-label" placeholder="SOLAR" name="symbol" onChange={handleInputChange} /></div>
         </div>
         <div className="row2 ">
-          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label" value="9" name="decimals" onChange={handleInputChange} /></div>
+          <div className="field"><label className="form-label">Decimals <span className="hint">0–9</span></label><input className="input mono hint-label"  name="decimals" onChange={handleInputChange} /></div>
           <div className="field"><label className="form-label">Initial supply</label><input className="input mono hint-label" placeholder="1,000,000" name="supply" onChange={handleInputChange} /></div>
         </div>
         <div className="field"><label className="block form-label">Description</label><input className="input block hint-label" placeholder="What does this token represent?" name="description" onChange={handleInputChange} /></div>
