@@ -1,4 +1,11 @@
+import { useState } from "react";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
+
 export const Burn = () => {
+    const [selectedMint, setSelectedMint] = useState("");
+
+  const tokens = useSelector((state: RootState) => state.tokens.tokens);
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
       {/* Form Section */}
@@ -18,9 +25,14 @@ export const Burn = () => {
         <div className="field">
           <label className="form-label">Select token</label>
 
-          <select className="select p-2">
-            <option>SOLAR — Solar Credit</option>
-            <option>FORGE — Foundry Coin</option>
+          <select className="select" value={selectedMint} onChange={(e) => setSelectedMint(e.target.value)}> 
+            <option value="">Select a token</option>
+
+            {tokens.map((token) => (
+              <option key={token.mint} value={token.mint}>
+                {token.symbol} — {token.name}
+              </option>
+            ))}
           </select>
         </div>
 

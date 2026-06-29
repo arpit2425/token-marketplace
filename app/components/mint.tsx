@@ -2,41 +2,45 @@ import { mintToken, getProvider } from "@/services/service";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 export const Mint = () => {
-  const {publicKey,signTransaction}=useWallet();
-  const[receiver,setReceiver]=useState("");
-  const [amount,setAmount] =useState("");
+  const { publicKey, signTransaction } = useWallet();
+  const [receiver, setReceiver] = useState("");
+  const [amount, setAmount] = useState("");
+  const [selectedMint, setSelectedMint] = useState("");
 
-   const [formData, setFormData] = useState({
-  receiver: "",
-  amount: "",
-  token: "",
-});
+  const tokens = useSelector((state: RootState) => state.tokens.tokens);
 
-const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setFormData((prevData) => ({
-    ...prevData,
-    [name]: value,
-  }));
-}
+  const [formData, setFormData] = useState({
+    receiver: "",
+    amount: "",
+  });
 
-  const onMintToken=async()=>{
-    console.log("formData",formData)
-      const program=await getProvider(publicKey,signTransaction);
-      const {amount,receiver,token}=formData;
-      if(!program || !publicKey || !signTransaction){
-        return
-      }
-        const respo= await mintToken({
-          program,
-          publicKey,
-          tokenAccount:new PublicKey("BUA1WY4hEwpgBa3xCzBfPfT3cc2KfqGZWxkeaYhpTUM2"),
-          receiverAccount:new PublicKey(receiver),
-          amount:+amount,
-         });
-         console.log("respo",respo);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+
+  const onMintToken = async () => {
+    console.log("formData", formData)
+    const program = await getProvider(publicKey, signTransaction);
+    const { amount, receiver } = formData;
+    if (!program || !publicKey || !signTransaction) {
+      return
+    }
+    const respo = await mintToken({
+      program,
+      publicKey,
+      tokenAccount: new PublicKey(selectedMint),
+      receiverAccount: new PublicKey(receiver),
+      amount: +amount,
+    });
+    console.log("respo", respo);
 
   }
   return (
@@ -59,9 +63,14 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className="field">
           <label className="form-label">Select token</label>
 
-          <select className="select">
-            <option>SOLAR — Solar Credit</option>
-            <option>FORGE — Foundry Coin</option>
+          <select className="select" value={selectedMint} onChange={(e) => setSelectedMint(e.target.value)}> 
+            <option value="">Select a token</option>
+
+            {tokens.map((token) => (
+              <option key={token.mint} value={token.mint}>
+                {token.symbol} — {token.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -87,7 +96,7 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             className="input mono"
             placeholder="250,000"
             name="amount"
-             onChange={handleInputChange}
+            onChange={handleInputChange}
           />
         </div>
 
@@ -162,7 +171,7 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>Current supply</span>
                 <span className="text-white font-mono text-sm">
-                   1,000,000
+                  1,000,000
                 </span>
               </div>
 
@@ -180,7 +189,7 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 </span>
               </div>
 
-              
+
             </div>
           </div>
         </aside>

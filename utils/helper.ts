@@ -1,5 +1,7 @@
 // utils/addressTruncator.ts
 
+import { PublicKey } from "@solana/web3.js"
+
 export function truncateAddress(address: string): string {
   if (!address) {
     throw new Error('Invalid address')
@@ -29,4 +31,10 @@ export const getCluster = (cluster: string): string => {
   }
 
   return clusters[getClusterURL(cluster)]
+}
+
+export const trimPublicKey=(publicKey:PublicKey)=>{
+  if(!publicKey) return ""
+  return `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
+
 }

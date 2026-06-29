@@ -1,13 +1,18 @@
 import { AnchorProvider, BN, Program, Wallet } from "@coral-xyz/anchor";
-import { Keypair, PublicKey, Connection, SystemProgram,TransactionSignature,
+import {
+  Keypair, PublicKey, Connection, SystemProgram, TransactionSignature,
   Transaction,
-  AccountMeta, } from "@solana/web3.js";
+  AccountMeta,
+} from "@solana/web3.js";
 import type { SplBackend } from "@/spl_backend";
 import idlJson from "@/spl_backend.json";
-import { 
-  TOKEN_2022_PROGRAM_ID, 
-  ASSOCIATED_TOKEN_PROGRAM_ID, 
-  getAssociatedTokenAddressSync 
+import {
+  TOKEN_2022_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
+  getTokenMetadata,
+  getMint
 } from "@solana/spl-token";
 import { getClusterURL } from "@/utils/helper";
 
@@ -26,23 +31,23 @@ interface CreateTokenParams {
 interface MintTokenParams {
   program: Program<SplBackend>;
   publicKey: PublicKey;
-  amount: number; 
+  amount: number;
   receiverAccount: PublicKey;
   tokenAccount: PublicKey;
 }
-interface TransferParams{
- program: Program<SplBackend>;
+interface TransferParams {
+  program: Program<SplBackend>;
   publicKey: PublicKey;
-  amount: number; 
+  amount: number;
   receiverAccount: PublicKey;
   tokenAccount: PublicKey;
 }
- 
+  
 const idl = idlJson as SplBackend;
 const Program_id = new PublicKey(idlJson.address);
 const cluster = process.env.NEXT_PUBLIC_CLUSTER || "devnet";
 const RPC_URL = getClusterURL(cluster);
-console.log("rpc_url",RPC_URL)
+console.log("rpc_url", RPC_URL)
 interface SignerWallet {
   publicKey: PublicKey;
   signTransaction: (tx: Transaction) => Promise<Transaction>;
@@ -106,9 +111,9 @@ export async function createAndMintToken({
   symbol,
   amount,
   uri
-}:CreateTokenParams) {
+}: CreateTokenParams) {
   try {
-   
+
 
     // 1. Generate a brand new, unique keypair for this specific Token Mint
     const mintKeypair = Keypair.generate();
@@ -159,33 +164,33 @@ export async function mintToken({
   tokenAccount,
   receiverAccount,
   amount
-}:MintTokenParams){
+}: MintTokenParams) {
   try {
-      const ataAddress = getAssociatedTokenAddressSync(
+    const ataAddress = getAssociatedTokenAddressSync(
       tokenAccount,
       receiverAccount,
       false,
       TOKEN_2022_PROGRAM_ID
     );
-    console.log("ataAddress",ataAddress)
-    let amountBn=new BN(amount)
-  const txSignature = await  program.methods.mintToken(amountBn).accounts({
-      signer:publicKey,
+    console.log("ataAddress", ataAddress)
+    let amountBn = new BN(amount)
+    const txSignature = await program.methods.mintToken(amountBn).accounts({
+      signer: publicKey,
       receiver: receiverAccount,
-      mintToken:tokenAccount,
-      tokenAccount:ataAddress,
-       tokenProgram: TOKEN_2022_PROGRAM_ID,
-        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
+      mintToken: tokenAccount,
+      tokenAccount: ataAddress,
+      tokenProgram: TOKEN_2022_PROGRAM_ID,
+      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
     }).signers([]).rpc();
     return {
-       success: true,
+      success: true,
       txSignature,
       ataAddress: ataAddress.toBase58(),
     }
   } catch (error) {
     console.log("error :", error)
-    
+
   }
 
 }
@@ -196,39 +201,148 @@ export async function transferToken({
   tokenAccount,
   receiverAccount,
   amount
-}:TransferParams) {
+}: TransferParams) {
   try {
-    const ataAddress=await getAssociatedTokenAddressSync(
-       tokenAccount,
+    const ataAddress = await getAssociatedTokenAddressSync(
+      tokenAccount,
       receiverAccount,
       false,
       TOKEN_2022_PROGRAM_ID
     );
-    const senderAta=await getAssociatedTokenAddressSync(
+    const senderAta = await getAssociatedTokenAddressSync(
       tokenAccount,
       publicKey,
       false,
-    TOKEN_2022_PROGRAM_ID
+      TOKEN_2022_PROGRAM_ID
     )
-        let amountBn=new BN(amount)
-        const txSignature=await program.methods.transferToken(amountBn).accounts({
-          signer:publicKey,
-          mint:tokenAccount,
-          senderTokenAccount:senderAta,
-          receiver:receiverAccount,
-          recipientTokenAccount:ataAddress,
+    let amountBn = new BN(amount)
+    const txSignature = await program.methods.transferToken(amountBn).accounts({
+      signer: publicKey,
+      mint: tokenAccount,
+      senderTokenAccount: senderAta,
+      receiver: receiverAccount,
+      recipientTokenAccount: ataAddress,
 
-        }).signers([]).rpc();
-         return {
-       success: true,
+    }).signers([]).rpc();
+    return {
+      success: true,
       txSignature,
       ataAddress: ataAddress.toBase58(),
     }
 
 
-    
+
   } catch (error) {
-     console.log("error :", error)
+    console.log("error :", error)
   }
-  
+}
+
+export interface TokenInfo {
+  mint: string;
+  tokenAccount: string;
+  owner: string;
+
+  name: string;
+  symbol: string;
+  description: string;
+  image: string;
+  uri: string;
+
+  amount: string;
+  balance: number;
+  decimals: number;
+
+  totalSupply: string;
+  uiTotalSupply: number;
+}
+
+export async function getAllTokens(
+  publicKey: PublicKey
+): Promise<TokenInfo[]> {
+  try {
+    const connection = new Connection(RPC_URL, "confirmed");
+
+    const response = await connection.getParsedTokenAccountsByOwner(
+      publicKey,
+      {
+        programId: TOKEN_2022_PROGRAM_ID,
+      }
+    );
+
+    const tokens = await Promise.all(
+      response.value.map(async (token) => {
+        try {
+          const mint = new PublicKey(
+            token.account.data.parsed.info.mint
+          );
+
+          const [metadata, mintInfo] = await Promise.all([
+            getTokenMetadata(connection, mint),
+            getMint(
+              connection,
+              mint,
+              "confirmed",
+              TOKEN_2022_PROGRAM_ID
+            ),
+          ]);
+
+          let image = "";
+          let description = "";
+
+          if (metadata?.uri) {
+            try {
+              const res = await fetch(metadata.uri);
+
+              if (res.ok) {
+                const json = await res.json();
+                image = json.image ?? "";
+                description = json.description ?? "";
+              }
+            } catch (err) {
+              console.warn(
+                `Unable to fetch metadata JSON for ${mint.toBase58()}`
+              );
+            }
+          }
+
+          return {
+            mint: mint.toBase58(),
+            tokenAccount: token.pubkey.toBase58(),
+            owner: token.account.data.parsed.info.owner,
+
+            name: metadata?.name ?? "",
+            symbol: metadata?.symbol ?? "",
+            uri: metadata?.uri ?? "",
+
+            image,
+            description,
+
+            amount:
+              token.account.data.parsed.info.tokenAmount.amount,
+
+            balance:
+              token.account.data.parsed.info.tokenAmount.uiAmount ?? 0,
+
+            decimals: mintInfo.decimals,
+
+            totalSupply: mintInfo.supply.toString(),
+
+            uiTotalSupply:
+              Number(mintInfo.supply) /
+              Math.pow(10, mintInfo.decimals),
+          } satisfies TokenInfo;
+        } catch (err) {
+          console.error("Failed to parse token:", err);
+          return null;
+        }
+      })
+    );
+
+    return tokens.filter(
+      (token): token is TokenInfo => token !== null
+    );
+  } catch (error) {
+    console.error("Failed to fetch tokens:", error);
+    return [];
+  }
 }

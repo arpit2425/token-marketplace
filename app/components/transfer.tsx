@@ -3,13 +3,27 @@
 import { getProvider, transferToken } from "@/services/service";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { ReactHTMLElement, useState } from "react";
+import { useState } from "react";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
+import { Preahvihear } from "next/font/google";
+import { trimPublicKey } from "@/utils/helper";
 export const Transfer = () => {
   const { connected, publicKey, signTransaction } = useWallet();
+  const [selectedMint, setSelectedMint] = useState("");
+  const [showBanner, setShowBanner] = useState(false)
+
+  const tokens = useSelector((state: RootState) => state.tokens.tokens);
   const [formData, setFormData] = useState({
-    tokenAccount: "6Wj8vT2XrxSH15xPuikZQXESjdXksE9onzKxofCPp9dH",
     receiverAccount: "",
     amount: ""
+  })
+  const [transferResponse, setTransferResponse]=useState({
+    to:"",
+    amount:"",
+    ata:"",
+    tokenName:"",
+    img:""
   })
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -18,14 +32,22 @@ export const Transfer = () => {
       [name]: value,
     }));
   }
-  const handleOnSubmit=async()=>{
-    const program=await getProvider(publicKey,signTransaction);
-    if(!program || !signTransaction || !publicKey){
+  const handleOnSubmit = async () => {
+    const program = await getProvider(publicKey, signTransaction);
+    if (!program || !signTransaction || !publicKey) {
       return
     }
-    const {tokenAccount,receiverAccount,amount}=formData;
-    const response=await transferToken({program,publicKey,tokenAccount:new PublicKey(tokenAccount),receiverAccount:new PublicKey(receiverAccount),amount:+amount});
-    console.log(response);
+    const { receiverAccount, amount } = formData;
+    const response = await transferToken({ program, publicKey, tokenAccount: new PublicKey(selectedMint), receiverAccount: new PublicKey(receiverAccount), amount: +amount });
+   setTransferResponse(prev=>{
+    return{
+    ...prev,
+    to:trimPublicKey(new PublicKey(receiverAccount)),
+    amount,
+    ata:response?.ataAddress ? trimPublicKey(new PublicKey(response?.ataAddress)):""
+    }
+   })
+    setShowBanner(true);
   }
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
@@ -45,10 +67,14 @@ export const Transfer = () => {
 
         <div className="field">
           <label className="form-label">Select token</label>
+          <select className="select p-2" value={selectedMint} onChange={(e) => setSelectedMint(e.target.value)}>
+            <option value="">Select a token</option>
 
-          <select className="select p-2">
-            <option>SOLAR — Solar Credit</option>
-            <option>FORGE — Foundry Coin</option>
+            {tokens.map((token) => (
+              <option key={token.mint} value={token.mint}>
+                {token.symbol} — {token.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -100,10 +126,11 @@ export const Transfer = () => {
       </div>
 
       {/* Preview Card */}
-      <div className="lg:w-[40%] rounded-2xl bg-[#09090a] p-4">
-        <aside className="flex flex-col gap-4 text-[#9a9aa8]">
-          <div
-            className="
+      {showBanner &&
+        <div className="lg:w-[40%] rounded-2xl bg-[#09090a] p-4">
+          <aside className="flex flex-col gap-4 text-[#9a9aa8]">
+            <div
+              className="
               border
               border-[#2a2a35]
               rounded-3xl
@@ -111,11 +138,11 @@ export const Transfer = () => {
               overflow-hidden
               bg-[radial-gradient(circle_at_10%_50%,rgba(37,99,235,0.15),transparent_35%),radial-gradient(circle_at_90%_10%,rgba(249,115,22,0.20),transparent_25%),linear-gradient(to_right,#12121a,#0b0b10,#12121a)]
             "
-          >
-            {/* Header */}
-            <div className="grid grid-cols-[auto_1fr] items-center gap-4 mb-8">
-              <div
-                className="
+            >
+              {/* Header */}
+              <div className="grid grid-cols-[auto_1fr] items-center gap-4 mb-8">
+                <div
+                  className="
                   w-16
                   h-16
                   rounded-full
@@ -129,55 +156,56 @@ export const Transfer = () => {
                   font-bold
                   text-xl
                 "
-              >
-                S
+                >
+                  S
+                </div>
+
+                <div>
+                  <h4 className="text-white text-xl font-bold">
+                    Solar Credit
+                  </h4>
+
+                  <p className="text-[#6d6d7f] tracking-widest text-[10px] uppercase">
+                    Mint authority
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h4 className="text-white text-xl font-bold">
-                  Solar Credit
-                </h4>
+              {/* Details */}
+              <div className="bg-black/70 rounded-3xl overflow-hidden text-sm">
+                <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
+                  <span>From</span>
+                  <span className="text-white font-mono text-sm">
+                    {connected ? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}` : " 1,000,000"}
+                  </span>
+                </div>
 
-                <p className="text-[#6d6d7f] tracking-widest text-[10px] uppercase">
-                  Mint authority
-                </p>
+                <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
+                  <span>To</span>
+                  <span className="text-white font-mono text-sm">
+                     {transferResponse.to}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
+                  <span>Amount</span>
+                  <span className="text-white font-mono text-sm">
+                    {transferResponse.amount}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
+                  <span>Recipient ATA</span>
+                  <span className="text-white font-mono text-sm">
+                    {transferResponse.ata}
+                  </span>
+                </div>
+
+
               </div>
             </div>
-
-            {/* Details */}
-            <div className="bg-black/70 rounded-3xl overflow-hidden text-sm">
-              <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
-                <span>From</span>
-                <span className="text-white font-mono text-sm">
-                  {connected ? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}` : " 1,000,000"}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
-                <span>To</span>
-                <span className="text-white font-mono text-sm">
-                  1,000,000
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
-                <span>Amount</span>
-                <span className="text-white font-mono text-sm">
-                  1,000,000
-                </span>
-              </div>
-              <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
-                <span>Recipient ATA</span>
-                <span className="text-white font-mono text-sm">
-                  1,000,000
-                </span>
-              </div>
-
-
-            </div>
-          </div>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      }
     </div>
   );
 };

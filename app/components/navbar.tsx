@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"; // 1. Added state hooks
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { trimPublicKey } from "@/utils/helper";
 
 export default function Navbar() {
   const { connected, publicKey, disconnect } = useWallet();
@@ -20,7 +21,7 @@ export default function Navbar() {
   const renderButtonContent = () => {
     if (!mounted) return "◈ Connect Wallet";
     if (connected && publicKey) {
-      return `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`;
+      return trimPublicKey(publicKey);
     }
     return "◈ Connect Wallet";
   };
