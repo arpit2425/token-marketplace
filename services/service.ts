@@ -15,33 +15,12 @@ import {
   getMint
 } from "@solana/spl-token";
 import { getClusterURL } from "@/utils/helper";
+import { BurnRequest, CreateTokenParams, MintTokenParams, TransferParams,  } from "./types";
 
 
 
 // Interface for the function parameters
-interface CreateTokenParams {
-  program: Program<SplBackend>;
-  publicKey: PublicKey;
-  decimals: number;
-  name: string;
-  symbol: string;
-  amount: number; // Base amount (e.g., 500 tokens)
-  uri: string;     // Off-chain metadata JSON link
-}
-interface MintTokenParams {
-  program: Program<SplBackend>;
-  publicKey: PublicKey;
-  amount: number;
-  receiverAccount: PublicKey;
-  tokenAccount: PublicKey;
-}
-interface TransferParams {
-  program: Program<SplBackend>;
-  publicKey: PublicKey;
-  amount: number;
-  receiverAccount: PublicKey;
-  tokenAccount: PublicKey;
-}
+
   
 const idl = idlJson as SplBackend;
 const Program_id = new PublicKey(idlJson.address);
@@ -344,5 +323,32 @@ export async function getAllTokens(
   } catch (error) {
     console.error("Failed to fetch tokens:", error);
     return [];
+  }
+}
+
+export async function burnToken({program,publicKey,mint,amount}:BurnRequest) {
+
+  try {
+    
+     const ataAddress = await getAssociatedTokenAddressSync(
+      mint,
+      publicKey,
+      false,
+      TOKEN_2022_PROGRAM_ID
+    );
+    let amountBn=new BN(amount);
+    console.log("ata",ataAddress)
+   const txSignature=await program.methods.burnToken(amountBn).accounts({
+      signer:publicKey,
+      mint:mint,
+      tokenAccount:ataAddress
+    }).signers([]).rpc();
+    return {
+      success: true,
+      txSignature,
+      ataAddress: ataAddress.toBase58(),
+    }
+  } catch (error) {
+     console.log("error :", error)
   }
 }

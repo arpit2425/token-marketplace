@@ -1,11 +1,71 @@
 import { useState } from "react";
 import { RootState } from "../store/store";
 import { useSelector } from "react-redux";
+import { burnToken, getProvider } from "@/services/service";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { TokenInfo } from "@/services/types";
 
 export const Burn = () => {
     const [selectedMint, setSelectedMint] = useState("");
+    const [mint, setMint] = useState<TokenInfo| null>(null);
+    const {publicKey,signAllTransactions,signTransaction}=useWallet();
+    const [showBanner, setShowBanner]=useState(false);
+    const [formData, setFormData] = useState({
+    mint: "",
+    amount: "",
+  });
+  
+  const [supplyData,setSupplyData]=useState({
+    your_balance:0,
+    burning:0,
+    new_supply:0,
+    new_balance:0,
+  })
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
 
   const tokens = useSelector((state: RootState) => state.tokens.tokens);
+  const handleOnBurn=async()=>{
+    try {
+       if ( !publicKey || !signTransaction) {
+      return
+    }
+    const program = await getProvider(publicKey, signTransaction);
+    const { amount } = formData;
+    if (!program || !publicKey || !signTransaction) {
+      return
+    }
+    const respo = await burnToken({
+      program,
+      publicKey,
+      mint: new PublicKey(selectedMint),
+      amount: +amount,
+    });
+    console.log("respo", respo);
+    const mintData=tokens.filter(token=>token.mint===selectedMint)[0];
+    setMint(mintData);
+    if(!mint) return 
+    const {amount:your_balance, decimals}=mint;
+    let new_balance=+your_balance-(+amount);
+    setSupplyData(prev=>({
+      ...prev,
+      your_balance:+your_balance,
+      burning:+amount,
+      new_balance,
+      new_supply:(new_balance/(10 ** decimals))
+    }))
+    setShowBanner(true);
+    } catch (error) {
+      console.log("error ",error)
+      
+    }
+  }
   return (
     <div className="flex flex-col lg:flex-row p-4 sm:p-10 text-white w-full gap-10">
       {/* Form Section */}
@@ -45,6 +105,8 @@ export const Burn = () => {
           <input
             className="input mono"
             placeholder="250,000"
+            name="amount"
+            onChange={handleInputChange}
           />
         </div>
 
@@ -62,13 +124,14 @@ export const Burn = () => {
               hover:opacity-90
               transition
             "
+            onClick={handleOnBurn}
           >
             ▲ Burn Forever →
           </button>
         </div>
       </div>
 
-      {/* Preview Card */}
+      {showBanner &&
       <div className="lg:w-[40%] rounded-2xl bg-[#09090a] p-4">
         <aside className="flex flex-col gap-4 text-[#9a9aa8]">
           <div 
@@ -104,7 +167,7 @@ export const Burn = () => {
 
               <div>
                 <h4 className="text-white text-xl font-bold">
-                  Solar Credit
+                  {mint?.name}
                 </h4>
 
                 <p className="text-[#6d6d7f] tracking-widest text-[10px] uppercase">
@@ -118,27 +181,27 @@ export const Burn = () => {
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>Your balance</span>
                 <span className="text-white font-mono text-sm">
-                   1,000,000
+                   {supplyData.your_balance}
                 </span>
               </div>
 
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>Burning</span>
                 <span className="text-white font-mono text-sm">
-                  1,000,000
+                  {supplyData.burning}
                 </span>
               </div>
 
               <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>New balance</span>
                 <span className="text-white font-mono text-sm">
-                  1,000,000
+                {supplyData.new_balance}
                 </span>
               </div>
                     <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-800">
                 <span>New supply</span>
                 <span className="text-white font-mono text-sm">
-                  1,000,000
+                  {supplyData.new_supply}
                 </span>
               </div>
 
@@ -147,6 +210,7 @@ export const Burn = () => {
           </div>
         </aside>
       </div>
+      }
     </div>
   );
 };

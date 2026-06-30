@@ -14,6 +14,52 @@ export type SplBackend = {
   },
   "instructions": [
     {
+      "name": "burnToken",
+      "discriminator": [
+        185,
+        165,
+        216,
+        246,
+        144,
+        31,
+        70,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "tokenAccount",
+          "writable": true
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "createAndMint",
       "discriminator": [
         85,

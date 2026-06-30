@@ -8,6 +8,52 @@
   },
   "instructions": [
     {
+      "name": "burn_token",
+      "discriminator": [
+        185,
+        165,
+        216,
+        246,
+        144,
+        31,
+        70,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "token_account",
+          "writable": true
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "create_and_mint",
       "discriminator": [
         85,
