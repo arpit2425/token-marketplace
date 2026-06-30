@@ -33,10 +33,14 @@ export const Transfer = () => {
     }));
   }
   const handleOnSubmit = async () => {
-    const program = await getProvider(publicKey, signTransaction);
-    if (!program || !signTransaction || !publicKey) {
+     if (!signTransaction || !publicKey) {
       return
     }
+    const program = await getProvider(publicKey, signTransaction);
+     if (!program) {
+      return
+    }
+   
     const { receiverAccount, amount } = formData;
     const response = await transferToken({ program, publicKey, tokenAccount: new PublicKey(selectedMint), receiverAccount: new PublicKey(receiverAccount), amount: +amount });
    setTransferResponse(prev=>{

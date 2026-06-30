@@ -28,6 +28,9 @@ export const Mint = () => {
 
   const onMintToken = async () => {
     console.log("formData", formData)
+    if ( !publicKey || !signTransaction) {
+      return
+    }
     const program = await getProvider(publicKey, signTransaction);
     const { amount, receiver } = formData;
     if (!program || !publicKey || !signTransaction) {

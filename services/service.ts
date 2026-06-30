@@ -137,10 +137,10 @@ export async function createAndMintToken({
       .accounts({
         payer: publicKey,
         mint: mintKeypair.publicKey,
-        ata: ataAddress,
-        tokenProgram: TOKEN_2022_PROGRAM_ID,
-        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
+        // ata: ataAddress,
+        // tokenProgram: TOKEN_2022_PROGRAM_ID,
+        // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        // systemProgram: SystemProgram.programId,
       })
       .signers([mintKeypair]) // The Mint keypair MUST sign to initialize the account from scratch
       .rpc();
@@ -178,10 +178,10 @@ export async function mintToken({
       signer: publicKey,
       receiver: receiverAccount,
       mintToken: tokenAccount,
-      tokenAccount: ataAddress,
-      tokenProgram: TOKEN_2022_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      systemProgram: SystemProgram.programId,
+      // tokenAccount: ataAddress,
+      // tokenProgram: TOKEN_2022_PROGRAM_ID,
+      // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      // systemProgram: SystemProgram.programId,
     }).signers([]).rpc();
     return {
       success: true,
@@ -221,7 +221,7 @@ export async function transferToken({
       mint: tokenAccount,
       senderTokenAccount: senderAta,
       receiver: receiverAccount,
-      recipientTokenAccount: ataAddress,
+      // recipientTokenAccount: ataAddress,
 
     }).signers([]).rpc();
     return {

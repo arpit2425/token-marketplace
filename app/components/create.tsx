@@ -88,6 +88,9 @@ export const Create = () => {
       description: formData.description,
       image: logoUrl, // Use the uploaded logo URL
     };
+    if (!signTransaction || !publicKey) {
+      return;
+    }
     const program = await getProvider(publicKey, signTransaction);
     const { name, symbol, decimals, description, supply } = formData;
     if (!program || !signTransaction || !publicKey) {
